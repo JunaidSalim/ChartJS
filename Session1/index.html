@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Toggle Heading Visibility</title>
+    <style>
+        /* Optional: Add some basic styling */
+        #toggleButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        // Function to toggle the visibility of the heading
+        function toggleHeading() {
+            // Get the heading element by its ID
+            var heading = document.getElementById('myHeading');
+            // Check the current display style and toggle it
+            if (heading.style.display === 'none') {
+                heading.style.display = 'block'; // Show the heading
+            } else {
+                heading.style.display = 'none'; // Hide the heading
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Heading to be toggled -->
+    <h1 id="myHeading">This is a Heading</h1>
+    <!-- Button to trigger the toggle function -->
+    <button id="toggleButton" onclick="toggleHeading()">Toggle Heading</button>
+    <script src="script.js"></script>
+</body>
+</html>
