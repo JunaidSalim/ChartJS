@@ -428,9 +428,3 @@ fetchData();
 | **Examples**         | Math operations              | Fetching data, timers           |
 
 ---
-
-### Summary
-
-- **Synchronous Functions**: Perfect for quick and simple tasks where you don’t need to wait.
-- **Asynchronous Functions**: Great for tasks that take time, like fetching data or waiting for a response.
-- Start with **Promises** and **Async/Await** for clean, readable code when working with asynchronous tasks.
