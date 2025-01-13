@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart</title>
+</head>
+
+<body>
+
+    <canvas></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let label = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+        let BackgroundColor = ['black','black','black','black','black','black','black','black'];
+
+        function MaxValue(arr) {
+    // Find the maximum value in the array
+    let m = Math.max(...arr);
+
+    // Find the index of the maximum value
+    let index = arr.indexOf(m);
+
+    // Set the background color of the corresponding index to green
+    BackgroundColor[index] = 'green';
+}
+
+let data = [65, 59, 80, 81, 56, 55, 40];
+MaxValue(data);
+
+        let dataset = [{
+                    label: 'Monthly Sales',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    backgroundColor: BackgroundColor,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                },{
+                    label:'Yearly Sales',
+                    data: [55, 69, 50, 71, 56, 55, 40],
+                    backgroundColor: BackgroundColor,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+        
+
+        let canvas = document.querySelector("canvas");
+
+        let ctx = canvas.getContext("2d");
+        const myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: label,
+                datasets: dataset,
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                animation: {
+                    duration: 200,
+                    easing: 'easeInOutQuad', // Easing function
+                    delay: (context) => context.index * 200, // Stagger animation per bar
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
