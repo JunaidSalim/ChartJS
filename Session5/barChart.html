@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart with RGBA Colors</title>
+</head>
+
+<body>
+    <canvas id="ctx"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('ctx').getContext('2d');
+
+        // Function to assign colors based on max and min values (in rgba format)
+        function selectColor(data) {
+            const maxValue = Math.max(...data);
+            const minValue = Math.min(...data);
+
+            return data.map(value => {
+                if (value === maxValue) return 'rgba(0, 255, 0, 1)';
+                if (value === minValue) return 'rgba(255, 0, 0, 1)';
+                return 'rgb(0, 0, 0, 1)';
+            });
+        }
+
+        // Define the chart type
+        let type = 'bar';
+
+        // Labels for the chart
+        let labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+        // Data for the chart
+        let dataValues = [15, 20, 13, 11, 8, 15];
+
+        // Dataset configuration
+        let dataset = [
+            {
+                label: 'Sales',
+                data: dataValues,
+                backgroundColor: selectColor(dataValues), // Dynamically set rgba colors
+                borderColor: 'rgba(0, 0, 0, 1)', // Slightly darker border
+                borderWidth: 1,
+            }
+        ];
+
+        // Chart data configuration
+        let data = {
+            labels: labels,
+            datasets: dataset // Use "datasets" to pass array of dataset objects
+        };
+
+        // Chart options configuration
+        let options = {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: Math.max(...dataValues) + 5,
+                },
+                x: {
+                    beginAtZero: true,
+                }
+            },
+            responsive: true,
+
+        };
+
+        // Create the chart
+        let myChart = new Chart(ctx, {
+            type: type,
+            data: data,
+            options: options
+        });
+
+    </script>
+</body>
+
+</html>

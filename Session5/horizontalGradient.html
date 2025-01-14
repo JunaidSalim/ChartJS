@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Gradient Bar Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="400" height="200"></canvas>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+
+        // Create the gradient
+        var gradient = ctx.createLinearGradient(0, 0, 400, 0); // From left to right
+        gradient.addColorStop(0, 'rgba(0, 123, 255, 1)'); // Start color
+        gradient.addColorStop(1, 'rgba(0, 255, 123, 1)'); // End color
+
+        // Create the bar chart
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [65, 59, 80, 81, 56],
+                    backgroundColor: gradient, // Use the gradient
+                    borderColor: 'rgba(0, 123, 255, 1)', // Optional border color
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

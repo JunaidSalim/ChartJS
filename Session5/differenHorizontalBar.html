@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart with Horizontal Gradients</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        // Data for the chart
+        const dataValues = [21, 19, 130, 15, 25, 30];
+        const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+        // Define different gradient color sets for each bar
+        const gradientColors = [
+            ['rgba(255, 0, 0, 1)', 'rgba(255, 165, 0, 1)'], // Red to Orange
+            ['rgba(0, 128, 0, 1)', 'rgba(0, 255, 0, 1)'],  // Dark Green to Light Green
+            ['rgba(0, 0, 255, 1)', 'rgba(0, 191, 255, 1)'], // Blue to Sky Blue
+            ['rgba(128, 0, 128, 1)', 'rgba(255, 0, 255, 1)'], // Purple to Magenta
+            ['rgba(255, 223, 0, 1)', 'rgba(255, 255, 0, 1)'], // Gold to Yellow
+            ['rgba(128, 128, 128, 1)', 'rgba(192, 192, 192, 1)'] // Gray to Silver
+        ];
+
+        // Custom plugin to create unique horizontal gradients for each bar
+        const gradientPlugin = {
+            id: 'gradientPlugin',
+            beforeRender: (chart) => {
+                const ctx = chart.ctx;
+                const dataset = chart.data.datasets[0];
+                const meta = chart.getDatasetMeta(0);
+
+                // Assign a unique gradient for each bar
+                dataset.backgroundColor = meta.data.map((bar, index) => {
+                    const barWidth = bar.width; // Width of the bar in pixels
+                    const barX = bar.x - barWidth / 2;
+
+                    // Create a horizontal gradient for the current bar
+                    const gradient = ctx.createLinearGradient(barX, 0, barX + barWidth, 0);
+                    gradient.addColorStop(0, gradientColors[index][0]); // Start color
+                    gradient.addColorStop(1, gradientColors[index][1]); // End color
+
+                    return gradient;
+                });
+            }
+        };
+
+        // Register the plugin
+        Chart.register(gradientPlugin);
+
+        // Create the chart
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sales',
+                    data: dataValues,
+                    borderColor: 'rgba(0, 0, 0, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

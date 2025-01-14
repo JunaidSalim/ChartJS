@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart with Individual Gradients</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        // Data for the chart
+        const dataValues = [21, 19, 130, 15, 25, 30];
+        const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+        // Custom plugin to create gradients for each bar
+        const gradientPlugin = {
+            id: 'gradientPlugin',
+            beforeRender: (chart) => {
+                const ctx = chart.ctx;
+                const dataset = chart.data.datasets[0];
+                const meta = chart.getDatasetMeta(0);
+
+                dataset.backgroundColor = meta.data.map((bar, index) => {
+                    const barHeight = bar.base - bar.y; // Height of the bar in pixels
+                    const barY = bar.y;
+
+                    // Create a gradient for each bar
+                    const gradient = ctx.createLinearGradient(0, barY + barHeight, 0, barY);
+                    gradient.addColorStop(0, 'rgba(255, 0, 0, 1)'); // Red at bottom
+                    gradient.addColorStop(1, 'rgba(0, 0, 255, 1)'); // Blue at top
+
+                    return gradient;
+                });
+            }
+        };
+
+        // Register the plugin
+        Chart.register(gradientPlugin);
+
+        // Create the chart
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sales',
+                    data: dataValues,
+                    borderColor: 'rgba(0, 0, 0, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

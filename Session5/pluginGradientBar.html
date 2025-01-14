@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart with Individual Gradients</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        
+        // Data for the chart
+        const dataValues = [21, 19, 130, 15, 25, 30];
+        const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Sales',
+                    data: dataValues,
+                    // This will be overridden by the plugin
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                    borderColor: 'rgba(0, 0, 0, 0.8)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            },
+            plugins: [{
+                afterDraw: function(chart) {
+                    const ctx = chart.ctx;
+                    const meta = chart.getDatasetMeta(0);
+                    
+                    meta.data.forEach((bar, index) => {
+                        // Get the value for this bar
+                        const value = dataValues[index];
+                        
+                        // Get bar dimensions
+                        const barWidth = bar.width;
+                        const barHeight = bar.height;
+                        const barX = bar.x;
+                        const barY = bar.y;
+                        
+                        // Create gradient for this specific bar
+                        const gradient = ctx.createLinearGradient(
+                            0,
+                            barY + barHeight, // Start at bottom of bar
+                            0,
+                            barY          // End at top of bar
+                        );
+                        
+                        // Add color stops
+                        gradient.addColorStop(0, 'rgba(255, 0, 0, 1)');   // Red at bottom
+                        gradient.addColorStop(1, 'rgba(0, 0, 255, 1)');   // Blue at top
+                        
+                        // Save context state
+                        ctx.save();
+                        
+                        // Create clipping region for this bar
+                        ctx.beginPath();
+                        ctx.rect(
+                            barX - barWidth/2,
+                            barY,
+                            barWidth,
+                            barHeight
+                        );
+                        ctx.clip();
+                        
+                        // Fill bar with gradient
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(
+                            barX - barWidth/2,
+                            barY,
+                            barWidth,
+                            barHeight
+                        );
+                        
+                        // Restore context state
+                        ctx.restore();
+                    });
+                }
+            }]
+        });
+    </script>
+</body>
+</html>

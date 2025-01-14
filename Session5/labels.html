@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="myChart"></canvas>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let ctx = document.getElementById('myChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',                // Defines the chart type
+            data: {
+                labels: ['Jan', 'Feb', 'Mar'],     // X-axis labels
+                datasets: [{
+                    label: 'Sales',                 // Dataset name in legend
+                    data: [12, 19, 3],             // Actual values to plot
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',  // Bar fill color
+                    borderColor: 'rgba(0, 0, 0, 0.8)',          // Bar border color
+                    borderWidth: 1                               // Bar border width
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            // Customize tooltip text
+                            label: (context) => `${context.dataset.label}: $${context.raw}`,
+                            // Add a title callback
+                            title: (tooltipItems) => `Period: ${tooltipItems[0].label}`
+                        },
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',  // Tooltip background
+                        titleColor: 'white',                    // Title text color
+                        bodyColor: 'white',                     // Body text color
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        padding: 10,                           // Internal padding
+                        displayColors: true                    // Show colored boxes
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false  // Removes horizontal grid lines
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false,  // Removes vertical grid lines
+                                // Additional grid customizations:
+                                color: 'rgba(0, 0, 0, 0.1)',  // Grid line color
+                                borderDash: [5, 5]            // Creates dashed lines
+                            }
+                        }
+                    }
+                }
+
+            }});
+    </script>
+</body>
+
+</html>
