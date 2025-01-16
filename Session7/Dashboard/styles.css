@@ -1,0 +1,112 @@
+/* General */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #1e1e2f;
+    color: #e0e0e0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: row;
+    width: 90vw;
+    max-width: 1200px;
+    height: 80vh; /* Fit content within the viewport */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 30%;
+    background: linear-gradient(135deg, #4a4a5c, #2c2c3b);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.sidebar h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #f7b267;
+    align-self: center;
+}
+
+.summary-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.summary-item {
+    background: linear-gradient(135deg, #f7b267, #f08a5d);
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.summary-item h3 {
+    margin: 0 0 5px;
+    font-size: 1.2rem;
+}
+
+/* Main Content */
+.main-content {
+    width: 70%;
+    background-color: #2a2d3e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.main-content h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #f7b267;
+}
+
+.button-group {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.toggle-btn {
+    background-color: #44475a;
+    color: #e0e0e0;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.toggle-btn.active {
+    background: linear-gradient(135deg, #f7b267, #f08a5d);
+    color: #ffffff;
+}
+
+.toggle-btn:hover {
+    background-color: #555770;
+}
+
+canvas {
+    width: 90%;
+    height: 20%;
+    overflow: hidden;
+}
