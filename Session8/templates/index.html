@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaign Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-1: #3b82f6;
+            --accent-2: #8b5cf6;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-1);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-container {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            padding-bottom: 80px;
+            border-radius: 10px;
+            height: 500px;
+        }
+
+        .chart-title {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Campaign Performance Analytics</h1>
+        </div>
+
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h2 class="chart-title">Top 5 Clients by Ad Spend</h2>
+                <canvas id="budgetedChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h2 class="chart-title">Top 5 Clients by Delivered Impressions</h2>
+                <canvas id="deliveredChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> <!-- Added plugin -->
+    <script>
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toFixed(0);
+        }
+
+        const gradientPlugin = {
+            id: 'gradientPlugin',
+            beforeRender: (chart) => {
+                const ctx = chart.ctx;
+                const dataset = chart.data.datasets[0];
+                const meta = chart.getDatasetMeta(0);
+
+                // Assign a unique gradient for each bar
+                dataset.backgroundColor = meta.data.map((bar, index) => {
+                    const barHeight = bar.base - bar.y; // Height of the bar in pixels
+                    const barY = bar.y;
+
+                    // Create a gradient for the current bar using its specific colors
+                    const gradient = ctx.createLinearGradient(0, barY + barHeight, 0, barY);
+                    gradient.addColorStop(0, 'rgba(59, 130, 246, 1)'); // Top color
+                    // Mid transition color with some transparency
+                    gradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.7)');
+                    // Bottom color of the gradient
+                    gradient.addColorStop(1, 'rgba(38, 99, 235, 1)');
+
+                    return gradient;
+                });
+            }
+        };
+
+        Chart.register(ChartDataLabels, gradientPlugin);
+
+        function createBudgetedChart(data) {
+            const ctx = document.getElementById('budgetedChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Ad Spend',
+                        data: data.values,
+                        backgroundColor: function (ctx) {
+                            var gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+                            // Starting gradient color (top of the chart)
+                            gradient.addColorStop(0, 'rgba(59, 130, 246, 1)'); // Top color
+                            gradient.addColorStop(0.5, 'rgba(59, 130, 246, 0.7)'); // Mid transition
+                            gradient.addColorStop(1, 'rgba(38, 99, 235, 1)'); // Bottom color
+                            return gradient;
+                        },
+                        borderWidth: 0,
+                        barThickness: 50,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false,
+                            labels: { color: '#f8fafc' }
+                        },
+                        datalabels: { // Enables datalabels
+                            anchor: 'end',
+                            align: 'top',
+                            offset: 0,
+                            clamp: true,
+                            padding: {
+                                bottom: 0,
+                                top: 0,
+                                left: 0,
+                                right: 0
+                            },
+                            formatter: function (value) {
+                                return value; // Displays the value on top of the bar
+                            },
+                            font: {
+                                weight: 'normal',
+                                size: '12'
+                            },
+                            color: '#f8fafc'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: false },
+                            ticks: {
+                                color: '#f8fafc',
+                                callback: function (value) {
+                                    return formatNumber(value);
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: "Ad Spend",
+                                color: '#f8fafc',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold',
+                                    family: "'Helvetica Neue', 'Arial', sans-serif"
+                                },
+                                padding: { top: 20 }
+                            },
+                            min: function (context) {
+                                // Extract the dataset
+                                const data = context.chart.data.datasets[0].data;
+
+                                // Calculate the minimum value dynamically
+                                const min = Math.min(...data);
+
+                                // Calculate standard deviation
+                                const mean = data.reduce((a, b) => a + b, 0) / data.length;
+                                const stdDev = Math.sqrt(data.reduce((a, b) => a + (b - mean) ** 2, 0) / data.length);
+
+                                // Return the minimum value minus n standard deviations
+                                const n = 1; // Adjust n as needed
+                                return min - stdDev;
+                            }
+
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#f8fafc',
+                                minRotation: 90
+                            },
+                            title: {
+                                display: true,
+                                text: "Clients",
+                                color: '#f8fafc',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold',
+                                    family: "'Helvetica Neue', 'Arial', sans-serif"
+                                },
+                                padding: { top: 20 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function createDeliveredChart(data) {
+            const ctx = document.getElementById('deliveredChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: 'Delivered Impressions',
+                        data: data.values,
+                        backgroundColor: function (ctx) {
+                            var gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, ctx.chart.height);
+                            // Starting gradient color (top of the chart)
+                            gradient.addColorStop(0, '#8b5cf6'); // Start color (top of the bar)
+                            gradient.addColorStop(0.5, 'rgba(139, 92, 246, 0.7)'); // Midway color with transparency
+                            gradient.addColorStop(1, 'rgba(139, 92, 246, 0)'); // End color (bottom of the bar with transparent)
+                            return gradient;
+                        },
+                        borderWidth: 0,
+                        barThickness: 50,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        datalabels: { // Enables datalabels
+                            anchor: 'end',
+                            align: 'top',
+                            offset: 0,
+                            clamp: true,
+                            padding: {
+                                bottom: 0,
+                                top: 0,
+                                left: 0,
+                                right: 0
+                            },
+                            formatter: function (value) {
+                                return value; // Displays the value on top of the bar
+                            },
+                            font: {
+                                weight: 'normal',
+                                size: '12'
+                            },
+                            color: '#f8fafc'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: false },
+                            ticks: {
+                                color: '#f8fafc',
+                                callback: function (value) {
+                                    return formatNumber(value);
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: "Delivered Impressions",
+                                color: '#f8fafc',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold',
+                                    family: "'Helvetica Neue', 'Arial', sans-serif"
+                                },
+                                padding: { top: 20 }
+                            },
+                            min: function (context) {
+                                // Extract the dataset
+                                const data = context.chart.data.datasets[0].data;
+
+                                // Calculate the minimum value dynamically
+                                const min = Math.min(...data);
+
+                                // Calculate standard deviation
+                                const mean = data.reduce((a, b) => a + b, 0) / data.length;
+                                const stdDev = Math.sqrt(data.reduce((a, b) => a + (b - mean) ** 2, 0) / data.length);
+
+                                // Return the minimum value minus n standard deviations
+                                const n = 1; // Adjust n as needed
+                                return min - stdDev;
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#f8fafc',
+                                minRotation: 90
+                            },
+                            title: {
+                                display: true,
+                                text: "Clients",
+                                color: '#f8fafc',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold',
+                                    family: "'Helvetica Neue', 'Arial', sans-serif"
+                                },
+                                padding: { top: 20 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function initializeDashboard() {
+            try {
+                const response = await fetch('/api/chart-data');
+                const data = await response.json();
+
+                createBudgetedChart(data.chart1);
+                createDeliveredChart(data.chart2);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+
+        window.addEventListener('load', initializeDashboard);
+    </script>
+</body>
+
+</html>
